@@ -6,15 +6,56 @@
 
 // color: gold, icon: joy (rune)
 //% color="#FFB600" icon="\u16b9"
-//% groups="['Pretty car', 'Low-level functions']"
+//% groups="['Pretty car', 'Mobile shooter']"
 namespace BestbudKids {
-    //% block="Tiến lên(tốc độ: %speed, thời gian: %time)"
-    //% group="Pretty car"
-    //% speed.defl=1 speed.min=1 speed.max=255
+    //% block="Tiến lên(tốc độ: %speed /100, thời gian: %time giây)"
+    //% group="Pretty car" weight=4
+    //% speed.defl=50 speed.min=1 speed.max=100
+    //% time.defl=1 time.min=0 time.max=180
     export function moveForward(speed: number, time: number): void {
-        SuperBit.MotorRunDual(SuperBit.enMotors.M1, speed, SuperBit.enMotors.M3, speed);
+        SuperBit.startMotor(SuperBit.Motors.M1, speed);
+        SuperBit.startMotor(SuperBit.Motors.M3, speed);
         basic.pause(time);
         SuperBit.MotorStopAll();
+    }
+
+    //% block="Lùi xuống(tốc độ: %speed /100, thời gian: %time giây)"
+    //% group="Pretty car" weight=3
+    //% speed.defl=50 speed.min=1 speed.max=100
+    //% time.defl=1 time.min=0 time.max=180
+    export function moveBackward(speed: number, time: number): void {
+        SuperBit.startMotor(SuperBit.Motors.M1, -speed);
+        SuperBit.startMotor(SuperBit.Motors.M3, -speed);
+        basic.pause(time);
+        SuperBit.MotorStopAll();
+    }
+
+    //% block="Quay trái(tốc độ: %speed /100, thời gian: %time giây)"
+    //% group="Pretty car" weight=2
+    //% speed.defl=50 speed.min=1 speed.max=100
+    //% time.defl=1 time.min=0 time.max=180
+    export function turnLeft(speed: number, time: number): void {
+        SuperBit.startMotor(SuperBit.Motors.M1, -speed);
+        SuperBit.startMotor(SuperBit.Motors.M3, speed);
+        basic.pause(time);
+        SuperBit.MotorStopAll();
+    }
+
+    //% block="Quay phải(tốc độ: %speed /100, thời gian: %time giây)"
+    //% group="Pretty car" weight=1
+    //% speed.defl=50 speed.min=1 speed.max=100
+    //% time.defl=1 time.min=0 time.max=180
+    export function turnRight(speed: number, time: number): void {
+        SuperBit.startMotor(SuperBit.Motors.M1, speed);
+        SuperBit.startMotor(SuperBit.Motors.M3, -speed);
+        basic.pause(time);
+        SuperBit.MotorStopAll();
+    }
+
+    //% block
+    //% group="Mobile shooter"
+    export function foo(): void {
+        
     }
 }
 
@@ -132,7 +173,7 @@ namespace SuperBit {
         S7,
         S8
     }
-    export enum enMotors {
+    export enum Motors {
         M1 = 8,
         M2 = 10,
         M3 = 12,
@@ -329,15 +370,15 @@ namespace SuperBit {
        
 
     }
-    //% blockId=SuperBit_MotorRun block="Motor|%index|speed(-255~255) %speed"
+    //% blockId=SuperBit_startMotor block="Motor|%index|speed(-100~100) %speed"
     //% weight=93
-    //% speed.min=-255 speed.max=255
+    //% speed.min=-100 speed.max=100
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=4
-    export function MotorRun(index: enMotors, speed: number): void {
+    export function startMotor(index: Motors, speed: number): void {
         if (!initialized) {
             initPCA9685()
         }
-        speed = speed * 16; // map 255 to 4096
+        speed = speed * 40.96; // map 100 to 4096
         if (speed >= 4096) {
             speed = 4095
         }
@@ -372,15 +413,15 @@ namespace SuperBit {
     
 
 
-    //% blockId=SuperBit_MotorRunDual block="Motor|%motor1|speed %speed1|%motor2|speed %speed2"
+    //% blockId=SuperBit_startMotorDual block="Motor|%motor1|speed %speed1|%motor2|speed %speed2"
     //% weight=92
     //% blockGap=50
-    //% speed1.min=-255 speed1.max=255
-    //% speed2.min=-255 speed2.max=255
+    //% speed1.min=-100 speed1.max=100
+    //% speed2.min=-100 speed2.max=100
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=2
-    export function MotorRunDual(motor1: enMotors, speed1: number, motor2: enMotors, speed2: number): void {
-        MotorRun(motor1, speed1);
-        MotorRun(motor2, speed2);
+    export function startMotorDual(motor1: Motors, speed1: number, motor2: Motors, speed2: number): void {
+        startMotor(motor1, speed1);
+        startMotor(motor2, speed2);
     }
 
     //% blockId=SuperBit_StepperDegree block="Stepper Motor(28BYJ-48) |%index|degree %degree"
@@ -403,10 +444,10 @@ namespace SuperBit {
             initPCA9685()
         }
         
-        stopMotor(enMotors.M1);
-        stopMotor(enMotors.M2);
-        stopMotor(enMotors.M3);
-        stopMotor(enMotors.M4);
+        stopMotor(Motors.M1);
+        stopMotor(Motors.M2);
+        stopMotor(Motors.M3);
+        stopMotor(Motors.M4);
         
     }
 
@@ -429,12 +470,12 @@ namespace SuperBit {
         degree2 = Math.abs(degree2);
         basic.pause(10240 * Math.min(degree1, degree2) / 360);
         if (degree1 > degree2) {
-            stopMotor(enMotors.M3);
-            stopMotor(enMotors.M4);
+            stopMotor(Motors.M3);
+            stopMotor(Motors.M4);
             basic.pause(10240 * (degree1 - degree2) / 360);
         } else {
-            stopMotor(enMotors.M1);
-            stopMotor(enMotors.M2);
+            stopMotor(Motors.M1);
+            stopMotor(Motors.M2);
             basic.pause(10240 * (degree2 - degree1) / 360);
         }
 
