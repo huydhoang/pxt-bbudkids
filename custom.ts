@@ -66,6 +66,7 @@ namespace BestbudKids {
             // 1-second loop with a 10 millisecond pause each checkpoint
             for (let i = 0; i < 100; i++) {
                 SuperBit.startMotor(SuperBit.Motors.M1, Math.cos(i / 100 * Math.PI * 2) * speed);
+                basic.showNumber(Math.cos(i / 100 * Math.PI * 2) * speed);
                 basic.pause(10);
             }
         }
