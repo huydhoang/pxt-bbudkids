@@ -6,49 +6,69 @@
 
 // color: gold, icon: joy (rune)
 //% color="#FFB600" icon="\u16b9"
-//% groups="['Pretty car', 'Mobile shooter']"
+//% groups="['Xe 2 bánh', 'Mobile shooter']"
 namespace BestbudKids {
     //% block="Tiến lên(tốc độ: %speed /100, thời gian: %time giây)"
-    //% group="Pretty car" weight=4
+    //% group="Xe 2 bánh" weight=6
     //% speed.defl=50 speed.min=1 speed.max=100
     //% time.defl=1 time.min=0 time.max=180
     export function moveForward(speed: number, time: number): void {
         SuperBit.startMotor(SuperBit.Motors.M1, speed);
         SuperBit.startMotor(SuperBit.Motors.M3, speed);
-        basic.pause(time);
+        basic.pause(time*1000);
         SuperBit.MotorStopAll();
     }
 
     //% block="Lùi xuống(tốc độ: %speed /100, thời gian: %time giây)"
-    //% group="Pretty car" weight=3
+    //% group="Xe 2 bánh" weight=5
     //% speed.defl=50 speed.min=1 speed.max=100
     //% time.defl=1 time.min=0 time.max=180
     export function moveBackward(speed: number, time: number): void {
         SuperBit.startMotor(SuperBit.Motors.M1, -speed);
         SuperBit.startMotor(SuperBit.Motors.M3, -speed);
-        basic.pause(time);
+        basic.pause(time*1000);
         SuperBit.MotorStopAll();
     }
 
     //% block="Quay trái(tốc độ: %speed /100, thời gian: %time giây)"
-    //% group="Pretty car" weight=2
+    //% group="Xe 2 bánh" weight=4
     //% speed.defl=50 speed.min=1 speed.max=100
     //% time.defl=1 time.min=0 time.max=180
     export function turnLeft(speed: number, time: number): void {
         SuperBit.startMotor(SuperBit.Motors.M1, -speed);
         SuperBit.startMotor(SuperBit.Motors.M3, speed);
-        basic.pause(time);
+        basic.pause(time*1000);
         SuperBit.MotorStopAll();
     }
 
     //% block="Quay phải(tốc độ: %speed /100, thời gian: %time giây)"
-    //% group="Pretty car" weight=1
+    //% group="Xe 2 bánh" weight=3
     //% speed.defl=50 speed.min=1 speed.max=100
     //% time.defl=1 time.min=0 time.max=180
     export function turnRight(speed: number, time: number): void {
         SuperBit.startMotor(SuperBit.Motors.M1, speed);
         SuperBit.startMotor(SuperBit.Motors.M3, -speed);
-        basic.pause(time);
+        basic.pause(time*1000);
+        SuperBit.MotorStopAll();
+    }
+
+    //% block="Đi vòng trái(tốc độ: %speed /100, thời gian: %time giây)"
+    //% group="Xe 2 bánh" weight=2
+    //% speed.defl=50 speed.min=1 speed.max=100
+    //% time.defl=1 time.min=1 time.max=180
+    export function detourLeft(speed: number, time: number): void {
+        // set constant speed for M3
+        SuperBit.startMotor(SuperBit.Motors.M3, speed);
+        // speed for M1 is set according to cosine of time
+        // when i = 0, cosine = 1; i = 50, cosine = -1;
+        // time loop for cycles larger than 1 second
+        for (let j = 0; j < time; j++) {
+            // 1-second loop with a 10 millisecond pause each checkpoint
+            for (let i = 0; i < 100; i++) {
+                SuperBit.startMotor(SuperBit.Motors.M1, Math.cos(i / 100 * Math.PI * 2) * speed);
+                basic.pause(10);
+            }
+        }
         SuperBit.MotorStopAll();
     }
 
