@@ -61,11 +61,33 @@ namespace BestbudKids {
         SuperBit.startMotor(SuperBit.Motors.M3, speed);
         // speed for M1 is set according to cosine of time
         // when i = 0, cosine = 1; i = 50, cosine = -1;
+        // M1 speed is always half the speed of M3 so it won't just turn around
         // time loop for cycles larger than 1 second
         for (let j = 0; j < time; j++) {
             // 1-second loop with a 10 millisecond pause each checkpoint
             for (let i = 0; i < 100; i++) {
-                SuperBit.startMotor(SuperBit.Motors.M1, Math.cos(i / 100 * Math.PI * 2) * speed);
+                SuperBit.startMotor(SuperBit.Motors.M1, Math.cos(i / 100 * Math.PI * 2) * speed / 2);
+                basic.pause(10);
+            }
+        }
+        SuperBit.MotorStopAll();
+    }
+
+    //% block="Đi vòng phải(tốc độ: %speed /100, thời gian: %time giây)"
+    //% group="Xe 2 bánh" weight=1
+    //% speed.defl=50 speed.min=1 speed.max=100
+    //% time.defl=1 time.min=1 time.max=180
+    export function detourRight(speed: number, time: number): void {
+        // set constant speed for M1
+        SuperBit.startMotor(SuperBit.Motors.M1, speed);
+        // speed for M3 is set according to cosine of time
+        // when i = 0, cosine = 1; i = 50, cosine = -1;
+        // M3 speed is always half the speed of M1 so it won't just turn around
+        // time loop for cycles larger than 1 second
+        for (let j = 0; j < time; j++) {
+            // 1-second loop with a 10 millisecond pause each checkpoint
+            for (let i = 0; i < 100; i++) {
+                SuperBit.startMotor(SuperBit.Motors.M3, Math.cos(i / 100 * Math.PI * 2) * speed / 2);
                 basic.pause(10);
             }
         }
