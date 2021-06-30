@@ -64,10 +64,10 @@ namespace BestbudKids {
         // when i = 0, cosine = 1 => max speed
         // time loop for cycles larger than 100 milliseconds
         for (let j = 0; j < time * 10; j++) {
-            // 1-second loop with a 1 millisecond pause each checkpoint
-            for (let i = 0; i < 100; i++) {
-                SuperBit.startMotor(SuperBit.Motors.M1, speed / 2 + Math.cos(i / 100 * Math.PI * 2) * speed / 2);
-                basic.pause(1);
+            // 100ms loop with a 10 millisecond pause each checkpoint
+            for (let i = 0; i < 10; i++) {
+                SuperBit.startMotor(SuperBit.Motors.M1, speed / 2 + Math.cos(i / 10 * Math.PI * 2) * speed / 2);
+                basic.pause(10);
             }
         }
         SuperBit.MotorStopAll();
@@ -85,10 +85,10 @@ namespace BestbudKids {
         // when i = 0, cosine = 1 => max speed
         // time loop for cycles larger than 100 milliseconds
         for (let j = 0; j < time * 10; j++) {
-            // 1-second loop with a 1 millisecond pause each checkpoint
-            for (let i = 0; i < 100; i++) {
-                SuperBit.startMotor(SuperBit.Motors.M3, speed / 2 + Math.cos(i / 100 * Math.PI * 2) * speed / 2);
-                basic.pause(1);
+            // 100ms loop with a 10 millisecond pause each checkpoint
+            for (let i = 0; i < 10; i++) {
+                SuperBit.startMotor(SuperBit.Motors.M3, speed / 2 + Math.cos(i / 10 * Math.PI * 2) * speed / 2);
+                basic.pause(10);
             }
         }
         SuperBit.MotorStopAll();
